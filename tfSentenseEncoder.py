@@ -7,7 +7,7 @@ import pandas as pd
 import re
 import seaborn as sns
 
-module_url = "https://tfhub.dev/google/universal-sentence-encoder/2" #@param ["https://tfhub.dev/google/universal-sentence-encoder/2", "https://tfhub.dev/google/universal-sentence-encoder-large/3"]
+module_url = "https://tfhub.dev/google/universal-sentence-encoder/2"  # @param ["https://tfhub.dev/google/universal-sentence-encoder/2", "https://tfhub.dev/google/universal-sentence-encoder-large/3"]
 
 # Import the Universal Sentence Encoder's TF Hub module
 embed = hub.Module(module_url)
@@ -24,13 +24,20 @@ messages = [word, sentence, paragraph]
 # Reduce logging output.
 tf.logging.set_verbosity(tf.logging.DEBUG)
 
-with tf.Session() as session:
-  session.run([tf.global_variables_initializer(), tf.tables_initializer()])
-  message_embeddings = session.run(embed(messages))
 
-  for i, message_embedding in enumerate(np.array(message_embeddings).tolist()):
-    print("Message: {}".format(messages[i]))
-    print("Embedding size: {}".format(len(message_embedding)))
-    message_embedding_snippet = ", ".join(
-        (str(x) for x in message_embedding[:3]))
-    print("Embedding: [{}, ...]\n".format(message_embedding_snippet))
+def runEncoder(messages):
+    with tf.Session() as session:
+        session.run([tf.global_variables_initializer(), tf.tables_initializer()])
+        message_embeddings = session.run(embed(messages))
+
+        for i, message_embedding in enumerate(np.array(message_embeddings).tolist()):
+            print("Message: {}".format(messages[i]))
+            print("Embedding size: {}".format(len(message_embedding)))
+            message_embedding_snippet = ", ".join(
+                (str(x) for x in message_embedding[:3]))
+            print("Embedding: [{}, ...]\n".format(message_embedding_snippet))
+
+    return message_embedding_snippet
+
+
+runEncoder(messages)
